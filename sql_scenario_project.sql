@@ -644,6 +644,50 @@ BB1				BCEDG
 
 -- ====================================================================================================================================
 
+create database scene12;
+
+CREATE TABLE `scene11`.`sale_data` (
+  `product_id` VARCHAR(5) NOT NULL,
+  `size` VARCHAR(45) NOT NULL,
+  `sdate` VARCHAR(45) NOT NULL,
+  `amount` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`product_id`));
+
+select * from sale_data;
+
+insert into sale_data(product_id, size, sdate, amount) values
+('AA1','10','01-01-2020','100'),
+('BB1','20','01-05-2020','200');
+
+use scene12;
+select * from sale_data;
+
+CREATE TABLE `scene12`.`product_details`(
+  `product_id` VARCHAR(5) NOT NULL,
+  `product_description` VARCHAR(45) NOT NULL);
+  
+insert into product_details(product_id, product_description) values
+('AA1','ABC'),
+('AA1','ABCD'),
+('AA1','AB'),
+('BB1','BC'),
+('BB1','BCD'),
+('BB1','BCED'),
+('BB1','BCEDG');
+  
+select * from product_details;
+
+-- QUESTION SOLUTION
+select a.*, b.product_description
+from sale_data a
+join product_details b
+on a.product_id = b.product_id
+where concat(a.product_id,length(product_description)) 
+in (select concat(product_id,max(length(product_description)))
+	from product_details
+    group by product_id);
+
+
 
 
 
