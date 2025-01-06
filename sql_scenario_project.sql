@@ -613,7 +613,32 @@ having count(purchase_date) > 1;
 
 -- ==================================scenario 12 ==================================================================================================
 /*
-Table: 
+-- product_details table will have product_description for each product_id.
+-- But, there can be more than one product_description for a product_id.
+-- Write SQL to get porduct_id, size, date, amount, & product_description; where product_description length is maximum for the given product_id.
+-- Also ensure there will no duplicates on product_id in result.
+
+Example:---
+Table1: sale_data
+-------------------------------------------------------
+product_id		size		sdate		        amount 
+--------------------------------------------------------
+AA1			    10			01-01-2020			100
+BB2			    20			01-05-2020			200
+---------------------------------------------------------
+
+Table2: product_details
+------------------------------------
+product_id		product_description				
+-----------------------------------
+AA1				ABC					
+AA1				ABCD				
+AA1				AB				
+BB1				BC				
+BB1				BCD
+BB1				BCED
+BB1				BCEDG	
+----------------------------
 
 */
 
