@@ -687,6 +687,15 @@ in (select concat(product_id,max(length(product_description)))
 	from product_details
     group by product_id);
 
+/*
+output:
+----------------------------------------------------------------------------------
+product_id		size		sdate			amount			product_description
+----------------------------------------------------------------------------------
+AA1				10			01-01-2020		100				ABCD
+BB1				20			01-05-2020		200				BCEDG
+----------------------------------------------------------------------------------
+*/
 
 
 
