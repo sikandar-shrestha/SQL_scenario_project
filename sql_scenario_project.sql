@@ -702,13 +702,147 @@ BB1				20			01-05-2020		200				BCEDG
 
 -- ==================================scenario 13 ==================================================================================================
 /*
-Table: 
+Table1: movies
+------------------------------
+movies_name		dt_of_publish
+------------------------------
+movie1			2018-10-10
+movie2			2019-10-10
+movie3			2020-10-10
+movie4			2020-05-10
+movie5			2021-07-10
+-------------------------------
+
+
+Table2: actors
+--------------------------------
+name		age		movie_name
+--------------------------------
+actor1	    25		movie1
+actor1		26		movie2
+actor3		25		movie3
+actor4		25		movie4
+actor1		25		movie5
+-------------------------------
+
+
+Table3: director_details
+------------------------------
+dir_name	age		movie_name
+------------------------------
+dir1		50		movie1
+dir1		51		movie2
+dir2		45		movie3
+dir4		40		movie4
+dir1		55		movie5
+-------------------------------
+
+Questions:
+1) Find a actor and director who has worked together more than once.
+2) List of actors who have worked in more than one movie_name.
+3) Director - Max movies in their lifetime.
+*/
+-- ====================================================================================================================================
+create database scene13;
+
+CREATE TABLE `scene13`.`movies` (
+  `movie_name` VARCHAR(20) NOT NULL,
+  `dt_of_publish` VARCHAR(45) NOT NULL
+  );
+  
+  
+  CREATE TABLE `scene13`.`director_details` (
+  `dir_name` VARCHAR(20) NOT NULL,
+  `age` VARCHAR(20) NOT NULL,
+  `movie_name` VARCHAR(20) NOT NULL
+  );
+  
+  
+  CREATE TABLE `scene13`.`actors` (
+  `name` VARCHAR(20) NOT NULL,
+  `age` VARCHAR(20) NOT NULL,
+  `movie_name` VARCHAR(20) NOT NULL
+  );
+  
+insert into movies(movie_name,dt_of_publish) values
+('movie1','2018-10-10'),
+('movie2','2019-10-10'),
+('movie3','2020-10-10'),
+('movie4','2020-05-10'),
+('movie5','2021-07-10');
+
+use scene13;
+select * from movies;
+
+insert into actors(name,age,movie_name) values
+('actor1;','25','movie1'),
+('actor1','26','movie2'),
+('actor3','25','movie3'),
+('actor4','25','movie4'),
+('actor1','25','movie5');
+
+select * from actors;
+
+
+insert into director_details(dir_name,age,movie_name) values
+('dir1','50','movie1'),
+('dir1','51','movie2'),
+('dir2','45','movie3'),
+('dir4','40','movie4'),
+('dir1','55','movie5');
+
+
+select * from director_details;
+
+-- Q1) Find a actor and director who has worked together more than once.
+select a.name, b.dir_name
+from actors as a
+join director_details as b
+on a.movie_name = b.movie_name
+group by a.name, b.dir_name
+having count(concat(a.name,b.dir_name)) > 1;
+
+/*
+-- output:
+----------------------------
+| name		|	dir_name   |	
+============================
+| actor1	|	dir1       |
+----------------------------
+*/
+-- Q2) List of actors who have worked in more than one movie_name.
+select name 
+from actors
+group by name
+having count(name) > 1;
+
+/*
+-- output:
+---------
+name	|
+=========	
+actor1	|	
+---------
 
 */
 
--- ====================================================================================================================================
 
+-- Q3) Director - Max movies in their lifetime.
 
+select dir_name 
+from director_details
+group by dir_name
+having count(dir_name) > 1;
+
+/*
+output:
+==========
+dir_name
+==========
+dir1
+----------
+
+*/
 
 
 -- ==================================scenario 14 ==================================================================================================
