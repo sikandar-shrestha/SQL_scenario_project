@@ -845,13 +845,117 @@ dir1
 */
 
 
--- ==================================scenario 14 ==================================================================================================
-/*
-Table: 
+-- ================================== scenario 14 =============================================================================
+-- ============================================================================================================================
 
+create database scene14;
+use scene14;
+
+create table scene14.nyrs (
+  `name` VARCHAR(20) NOT NULL,
+  `subject` VARCHAR(45) NOT NULL,
+  `marks` varchar(10) not null,
+  `years` varchar(10) not null);
+  
+  
+select * from nyrs;
+
+insert into nyrs(name, subject, marks, years) values
+('student1','math','76','2009'),
+('student1','math','56','2010'),
+('student1','eng','86','2009'),
+('student1','eng','87','2010'),
+('student1','sci','62','2009'),
+('student1','sci','62','2010');
+
+
+select * from nyrs;
+
+-- output:
+/*
+===========================================
+| name		|	subject  | marks | years  |
+===========================================
+| student1	|	math     | 86	 | 2009   |
+| student1	|	math     | 87	 | 2010   |
+| student1	|	eng      | 76    | 2009   |
+| student1	|	eng      | 56	 | 2010   | 
+| student1	|	sci      | 62	 | 2009   |
+| student1	|	sci      | 62	 | 2010   |
+==========================================
 */
 
--- ====================================================================================================================================
+
+select *, 
+	   lag(marks) over (partition by subject order by years) as yy
+from nyrs;
+
+/*
+ OUTPUT:--
+==============================================
+| name		|subject  | marks | years | yy   |
+==============================================
+| student1	| eng     | 86	 | 2009   | null |
+| student1	| eng     | 87	 | 2010   | 86   |
+| student1	| math    | 76   | 2009   | null |
+| student1	| math    | 56	 | 2010   | 76   |
+| student1	| sci     | 62	 | 2009   | null |
+| student1	| sci     | 62	 | 2010   | 62   |
+==============================================
+*/
+
+select *, (marks - yy) as diff
+  from 
+(
+   select *, lag(marks) over (partition by subject order by years) as yy
+   from nyrs
+) a ;
+   
+/*
+ OUTPUT:--
+=====================================================
+| name		|subject  | marks | years | yy   | diff |
+=====================================================
+| student1	| eng     | 86	 | 2009   | null | null |
+| student1	| eng     | 87	 | 2010   | 86   | 1    |
+| student1	| math    | 76   | 2009   | null | null |
+| student1	| math    | 56	 | 2010   | 76   | -20  |
+| student1	| sci     | 62	 | 2009   | null | null |
+| student1	| sci     | 62	 | 2010   | 62   | 0    |
+=====================================================
+*/
+
+select name, subject, years, marks,
+	   case when isnull(diff) then 'null'
+			when diff < 0 then 'less'
+			when diff > 0 then 'more'
+			else 'same' end as result
+from 
+( select *, (marks - yy) as diff
+  from 
+  (
+   select *, lag(marks) over (partition by subject order by years) as yy
+   from nyrs
+   ) a
+) p;
+
+
+/*
+-- output:
+===================================================
+| name		|	subject  | years | marks | result |	
+===================================================
+| student1	|	eng      | 2009	 | 86	 | null	  |
+| student1	|	eng      | 2010	 | 87	 | more	  |
+| student1	|	math     | 2009	 | 76    | null	  |
+| student1	|	math     | 2010	 | 56	 | less	  |
+| student1	|	sci      | 2009	 | 62	 | null	  |
+| student1	|	sci      | 2010	 | 62	 | same	  |
+===================================================
+*/
+
+
+
 
 
 
